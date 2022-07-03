@@ -1,10 +1,19 @@
-using FileIO, ImageMagick, ImageIO, Images
+using FileIO, ImageMagick, ImageIO, Images, ImageView, Plots
 include("Read.jl")
+include("Equalization.jl")
 
-pathHH = "Data/NISARA-00914/NISARA_00914_HH.mlc"
-pathHV = "Data/NISARA-00914/NISARA_00914_HV.mlc"
-pathVV = "Data/NISARA-00914/NISARA_00914_VV.mlc"
+pathHH = "Data/Haywrd_L090/Haywrd_L090HH_CX_01.mlc"
+pathHV = "Data/Haywrd_L090/Haywrd_L090HV_CX_01.mlc"
+pathVV = "Data/Haywrd_L090/Haywrd_L090VV_CX_01.mlc"
 
-dims = (6451, 3300)
-read_bin(pathHH, pathHV, pathVV, dims)
+dims = (14065, 3300)
+
+Img = read_bin!(pathHH, pathHV, pathVV, dims[1], dims[2])
+
+ImgEq = equalization(Img, dim)
+
+
+
+ImgRGB = colorview(RGB, permutedims(ImgEq, (3, 1, 2)))
+#[channel2 channel3 channel1]
 

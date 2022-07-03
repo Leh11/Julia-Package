@@ -1,16 +1,23 @@
+using RCall
+function read_bin!(hh::String, hv::String, vv::String, lin::Int, col::Int)
 
-function open_data(path, dims)
-    channel = Array{Float32}(undef, dims)
-    open(path) do io
-        read!(io, channel)
-    end
-    return channel
-end
+    channel1 = convert(Array{Float64},
+        R"""matrix(readBin(file($pathHH, "rb"), double(), n=($lin * $col),
+                size=4, endian="little"),
+            nrow=$lin, ncol=$col, byrow=T)"""
+    )
 
-function read_bin(pathHH, pathHV, pathVV, dims)
-    HH = open_data(pathHH, dims)
-    HV = open_data(pathHV, dims)
-    VV = open_data(pathVV, dims)
+    channel2 = convert(Array{Float64},
+        R"""matrix(readBin(file($pathHV, "rb"), double(), n=($lin * $col),
+                size=4, endian="little"),
+            nrow=$lin, ncol=$col, byrow=T)"""
+    )
 
-    img = Array{Float64}((HH, HV, VV), (3, dims))
+    channel3 = convert(Array{Float64},
+        R"""matrix(readBin(file($pathVV, "rb"), double(), n=($lin * $col),
+                size=4, endian="little"),
+            nrow=$lin, ncol=$col, byrow=T)"""
+    )
+    #(3, 1, 2)
+    return reshape([channel1 channel2 channel3], (lin, col, 3))
 end
