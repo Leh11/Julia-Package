@@ -10,7 +10,7 @@ dims = (14065, 3300)
 
 Img = read_bin!(pathHH, pathHV, pathVV, dims[1], dims[2])
 
-ImgEq = equalization(Img, dim)
+ImgEq = equalization(Img, dims)
 
 
 
